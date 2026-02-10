@@ -33,12 +33,25 @@ const rest = computed(() => journalPosts.value.slice(1))
 
     <div v-if="featured" class="grid gap-6">
       <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
-        <p class="text-xs uppercase tracking-[0.35em] text-white/50">Featured</p>
-        <h2 class="mt-3 text-2xl font-semibold tracking-tight">
-          <NuxtLink class="transition hover:text-white" :to="journalPath(featured)">
-            {{ featured.title }}
-          </NuxtLink>
-        </h2>
+        <p class="text-xs uppercase tracking-[0.35em] text-white/50">
+          {{ featured.kicker ?? featured.meta?.kicker ?? 'Featured' }}
+        </p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight">
+        <NuxtLink class="inline-flex items-center gap-2 transition hover:text-white" :to="journalPath(featured)">
+          <span
+            v-if="(featured.status ?? featured.meta?.status) !== 'hidden'"
+            class="h-2 w-2 rounded-full"
+            :class="{
+              'bg-red-500': (featured.status ?? featured.meta?.status) === 'deprecated',
+              'bg-orange-400': (featured.status ?? featured.meta?.status) === 'maintenance mode',
+              'bg-green-400': (featured.status ?? featured.meta?.status) === 'open development',
+              'bg-white/30': !(featured.status ?? featured.meta?.status)
+            }"
+            :title="featured.status ?? featured.meta?.status"
+          ></span>
+          {{ featured.title }}
+        </NuxtLink>
+      </h2>
         <p class="mt-3 text-sm text-white/70">{{ featured.description }}</p>
         <div class="mt-4 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-white/40">
           <span>{{ formatDate(featured.date ?? featured.meta?.date) }}</span>
@@ -52,12 +65,25 @@ const rest = computed(() => journalPosts.value.slice(1))
           :key="post.path"
           class="rounded-2xl border border-white/10 bg-white/5 p-5"
         >
-          <p class="text-xs uppercase tracking-[0.3em] text-white/50">Journal</p>
-          <h3 class="mt-3 text-xl font-semibold tracking-tight">
-            <NuxtLink class="transition hover:text-white" :to="journalPath(post)">
-              {{ post.title }}
-            </NuxtLink>
-          </h3>
+          <p class="text-xs uppercase tracking-[0.3em] text-white/50">
+            {{ post.kicker ?? post.meta?.kicker ?? 'Journal' }}
+          </p>
+        <h3 class="mt-3 text-xl font-semibold tracking-tight">
+          <NuxtLink class="inline-flex items-center gap-2 transition hover:text-white" :to="journalPath(post)">
+            <span
+              v-if="(post.status ?? post.meta?.status) !== 'hidden'"
+              class="h-2 w-2 rounded-full"
+              :class="{
+                'bg-red-500': (post.status ?? post.meta?.status) === 'deprecated',
+                'bg-orange-400': (post.status ?? post.meta?.status) === 'maintenance mode',
+                'bg-green-400': (post.status ?? post.meta?.status) === 'open development',
+                'bg-white/30': !(post.status ?? post.meta?.status)
+              }"
+              :title="post.status ?? post.meta?.status"
+            ></span>
+            {{ post.title }}
+          </NuxtLink>
+        </h3>
           <p class="mt-3 text-sm text-white/70">{{ post.description }}</p>
           <div class="mt-4 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-white/40">
             <span>{{ formatDate(post.date ?? post.meta?.date) }}</span>

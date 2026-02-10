@@ -16,8 +16,25 @@ const { data: doc } = await useAsyncData(`journal-${route.params.slug}`, async (
     </NuxtLink>
     <div v-if="doc">
       <div class="mt-6">
-        <p class="text-xs uppercase tracking-[0.35em] text-white/50">Journal</p>
-        <h1 class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">{{ doc.title }}</h1>
+        <p class="text-xs uppercase tracking-[0.35em] text-white/50">
+          {{ doc.kicker ?? doc.meta?.kicker ?? 'Journal' }}
+        </p>
+        <h1 class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+          <span class="inline-flex items-center gap-2">
+            <span
+              v-if="(doc.status ?? doc.meta?.status) !== 'hidden'"
+              class="h-2 w-2 rounded-full"
+              :class="{
+                'bg-red-500': (doc.status ?? doc.meta?.status) === 'deprecated',
+                'bg-orange-400': (doc.status ?? doc.meta?.status) === 'maintenance mode',
+                'bg-green-400': (doc.status ?? doc.meta?.status) === 'open development',
+                'bg-white/30': !(doc.status ?? doc.meta?.status)
+              }"
+              :title="doc.status ?? doc.meta?.status"
+            ></span>
+            {{ doc.title }}
+          </span>
+        </h1>
         <p class="mt-4 text-base text-white/70">{{ doc.description }}</p>
         <div class="mt-4 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-white/40">
           <span>{{ formatDate(doc.date ?? doc.meta?.date) }}</span>
